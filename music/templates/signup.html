@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.4/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-black h-screen flex flex-col items-center justify-center">
+<div class="w-full max-w-xs px-6">
+    <div class="mb-10 flex flex-col items-center">
+        <img src="https://i.ibb.co/Tw0JGzb/Harmoni-Fi-crop-Logo.png" alt="HarmoniFi Logo" class="w-20 h-20">
+        <a href="https://ibb.co/DL8DM5C"><img src="https://i.ibb.co/52nWjB8/Harmoni-Fi-typeface.png" alt="Harmoni-Fi-typeface" border="0"></a>
+    </div>
+
+    <div>
+        <style>
+            h5{
+                color: white;
+            }
+        </style>
+
+        {% for message in messages %}
+        <h5>{{message}}</h5>
+        {% endfor %}
+    </div>
+
+    <form action="{% url 'signup' %}" method="POST" class="bg-black">
+        {% csrf_token %}
+
+        <div class="mb-4 relative">
+            <input class="bg-gray-800 text-white border border-gray-600 rounded py-2 px-4 block w-full appearance-none leading-normal" type="text" name="username" placeholder="Username">
+            <span class="absolute right-4 top-2 text-gray-400 cursor-pointer" onclick="toggleVisibility('username')">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="mb-4 relative">
+            <input class="bg-gray-800 text-white border border-gray-600 rounded py-2 px-4 block w-full appearance-none leading-normal" type="email" name="email" placeholder="Email">
+            <span class="absolute right-4 top-2 text-gray-400 cursor-pointer" onclick="toggleVisibility('email')">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="mb-6 relative">
+            <input class="bg-gray-800 text-white border border-gray-600 rounded py-2 px-4 block w-full appearance-none leading-normal" type="password" name="password" placeholder="Password">
+            <span class="absolute right-4 top-2 text-gray-400 cursor-pointer" onclick="toggleVisibility('password')">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="mb-6">
+            <input class="bg-gray-800 text-white border border-gray-600 rounded py-2 px-4 block w-full appearance-none leading-normal" type="password" name="password2" placeholder="Repeat Password">
+        </div>
+
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-4">Register</button>
+
+        <p class="text-center text-gray-400 text-xs">
+            Already have an account?<a href="/login" class="text-green-500"> Sign in</a>
+        </p>
+    </form>
+
+    <p class="text-center text-gray-500 text-xs mt-4">
+        &copy; HarmoniFi
+    </p>
+</div>
+
+<script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+
+<style>
+    .far {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 400;
+        font-style: normal;
+    }
+</style>
+
+<script>
+    function toggleVisibility(field) {
+        var inputField = document.getElementsByName(field)[0];
+        var icon = document.querySelector(`[name=${field}] + span i`);
+
+        // Toggle input type between 'password' and 'text'
+        inputField.type = (inputField.type === 'password') ? 'text' : 'password';
+
+        // Toggle eye icon between open and closed
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+</script>
+</body>
+</html>
