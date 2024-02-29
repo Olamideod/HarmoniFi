@@ -1,15 +1,13 @@
 {
     "version": 2,
-    "builds": [
-      {
-        "src": "spotify_clone",  
-        "use": "@vercel/python",
-        "build": {
-          "env": {
-            "DJANGO_SETTINGS_MODULE": "spotify_clone.settings"
-          },
-          "command": "python manage.py collectstatic --noinput"
+    "builds" : [
+        {
+            "src": "spotify_clone/wsgi.py",
+            "use": "@vercel/python",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "spotify_clone.settings"
+            },
+            "command": "python manage.py collectstatic --noinput"
+            }
+        ]
         }
-      }
-    ]
-}  
