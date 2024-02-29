@@ -1,13 +1,16 @@
 {
     "version": 2,
-    "builds" : [
+    "builds": [
         {
-            "src": "spotify_clone/wsgi.py",
-            "use": "@vercel/python",
-            "env": {
-                "DJANGO_SETTINGS_MODULE": "spotify_clone.settings"
-            },
-            "command": "python manage.py collectstatic --noinput"
-            }
-        ]
+        "src": "spotify_clone/wsgi.py",
+        "use": "@vercel/python",
+        "config": {"maxLambdasize": "15mb", "runtime": "python3.9"
         }
+    }],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "spotify_clone/wsgi.py"
+        }
+    ]
+}
