@@ -2,27 +2,32 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 import requests
 
-def top_artists():
-   url = "https://spotify-scraper.p.rapidapi.com/v1/chart/artists/top"
+# Existing code ...
 
-   headers = {
-      "X-RapidAPI-Key": "14e5d202e1mshb2616e210eec2fdp16681fjsn7931abdea6db",
-      "X-RapidAPI-Host": "spotify-scraper.p.rapidapi.com"
+def top_artists():
+   url = "https://api.last.fm/v2/user/top/artists"  # Update the URL for Last.fm API
+
+   # Include any required parameters in the params dictionary
+   params = {
+      'user': 'your-lastfm-username',  # Replace with your Last.fm username
+      'api_key': 'your-lastfm-api-key',  # Replace with your Last.fm API key
+      'format': 'json'
    }
 
-   response = requests.get(url, headers=headers)
+   response = requests.get(url, params=params)
    response_data = response.json()
 
    artists_info = []
 
    # Fix: Correct the variable name to avoid UnboundLocalError
-   if 'artists' in response_data:
-      for artist in response_data['artists']:
-         name = artist.get('name', 'No Name')  # Fix: Change 'artists' to 'artist'
-         avatar_url = artist.get('visuals', {}).get('avatar', [{}])[0].get('url', 'No URL')
-         artist_id = artist.get('id', 'No ID')
+   if 'top artists' in response_data:
+      for artist in response_data['top artists']['artist']:
+         name = artist.get('name', 'No Name')
+         avatar_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
+         artist_id = artist.get('mbid', 'No ID')  # "mbid" stands for MusicBrainz Identifier
          artists_info.append((name, avatar_url, artist_id))
 
    return artists_info
@@ -35,8 +40,15 @@ def index(request):
    context = {
       'artists_info': artists_info
    }
-   return render(request, 'index.html', context) # when ever a user is in the index(home page), show the index.html file.
+   return render(request, 'index.html', context)  # when a user is on the index (home page), show the index.html file.
 
+def lastfm_callback(request):
+   # Extract the Last.fm token from the request
+   lastfm_token = request.GET.get('token')
+
+   # Your logic to securely handle the Last.fm token (e.g., validate, store, process)
+
+   return HttpResponse("Last.fm callback received successfully!")
 
 def login(request):
    if request.method == 'POST':
@@ -49,11 +61,10 @@ def login(request):
          auth.login(request, user)
          return redirect('/')
       else:
-         messages.info(request, 'credentials Invalid')
+         messages.info(request, 'Credentials Invalid')
          return redirect('login')
       
    return render(request, 'login.html')
-
 
 def signup(request):
    if request.method == 'POST':
@@ -75,7 +86,7 @@ def signup(request):
 
             # log user in
             user_login = auth.authenticate(username=username, password=password)
-            auth.login(request, user_login)  # <-- Fix the typo here
+            auth.login(request, user_login)
             return redirect('/')
       else:
             messages.info(request, 'Passwords Not Matching')
@@ -83,7 +94,7 @@ def signup(request):
          
    # Render the signup form template for GET requests
    return render(request, 'signup.html')
- 
+
 @login_required(login_url="login")     
 def logout(request):
    auth.logout(request)
