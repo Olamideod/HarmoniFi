@@ -4,43 +4,43 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import requests
-
-# Existing code ...
+import os
 
 def top_artists():
-   url = "https://api.last.fm/v2/user/top/artists"  # Update the URL for Last.fm API
+   lastfm_api_url = "http://ws.audioscrobbler.com/2.0/"
 
-   # Include any required parameters in the params dictionary
    params = {
-      'user': 'your-lastfm-username',  # Replace with your Last.fm username
-      'api_key': 'your-lastfm-api-key',  # Replace with your Last.fm API key
+      'user': 'your-lastfm-username',
+      'api_key': 'your-lastfm-api-key',
       'format': 'json'
    }
 
-   response = requests.get(url, params=params)
-   response_data = response.json()
+   response = requests.get(lastfm_api_url + 'user/top/artists', params=params)
 
-   artists_info = []
+   if response.status_code == 200:
+      response_data = response.json()
+      artists_info = []
 
-   # Fix: Correct the variable name to avoid UnboundLocalError
-   if 'top artists' in response_data:
-      for artist in response_data['top artists']['artist']:
-         name = artist.get('name', 'No Name')
-         avatar_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
-         artist_id = artist.get('mbid', 'No ID')  # "mbid" stands for MusicBrainz Identifier
-         artists_info.append((name, avatar_url, artist_id))
+      if 'topartists' in response_data:
+            for artist in response_data['topartists']['artist']:
+               name = artist.get('name', 'No Name')
+               avatar_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
+               artist_id = artist.get('mbid', 'No ID')
+               artists_info.append((name, avatar_url, artist_id))
 
-   return artists_info
+      return artists_info
+   else:
+      # Handle the case when the API request is not successful
+      return []
 
 @login_required(login_url="login")
 def index(request):
    artists_info = top_artists()
 
-   # Fix: Define the context dictionary properly
    context = {
       'artists_info': artists_info
    }
-   return render(request, 'index.html', context)  # when a user is on the index (home page), show the index.html file.
+   return render(request, 'index.html', context) # when a user is on the index (home page), show the index.html file.
 
 def lastfm_callback(request):
    # Extract the Last.fm token from the request
