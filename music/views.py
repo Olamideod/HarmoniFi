@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import requests
+from django.contrib.staticfiles import finders
 import os
 
 def top_artists():
@@ -32,6 +33,21 @@ def top_artists():
    else:
       # Handle the case when the API request is not successful
       return []
+
+
+def css_view(request):
+   # Find the path to your style.css file
+   css_path = finders.find('style.css')
+
+   # Read the content of the CSS file
+   with open(css_path, 'r') as css_file:
+      css_content = css_file.read()
+
+   # Create an HttpResponse object and set the content type to 'text/css'
+   response = HttpResponse(css_content, content_type='text/css')
+
+   return response
+
 
 @login_required(login_url="login")
 def index(request):
