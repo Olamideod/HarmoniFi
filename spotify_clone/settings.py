@@ -55,6 +55,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://harmonifi.2.us-1.fl0.io']  # Add this line
+
+
 ROOT_URLCONF = 'spotify_clone.urls'
 
 TEMPLATES = [
