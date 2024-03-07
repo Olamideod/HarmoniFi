@@ -61,7 +61,10 @@ While existing solutions offer music streaming services, HarmoniFi aims to stand
 
 This section showcases the visual evolution of the HarmoniFi user interface (UI) through different stages of development.
 
-* **Concept Stage (https://www.google.com/url?q=https://i.ibb.co/cbGbffg/Screenshot-137.png&sa=D&source=docs&ust=1709855626431824&usg=AOvVaw1oSBkPxlRXsxRFsZUWNbQL):** Replace this URL with the image URL of your initial concept sketch or wireframe.
+* **Concept Stage (https://i.ibb.co/cbGbffg/Screenshot-137.png):** 
+
+![image](https://i.ibb.co/cbGbffg/Screenshot-137.png)
+
 * **Prototype Stage (https://i.ibb.co/DkZpH5N/Screenshot-102.png):** Replace this URL with the image URL of a basic UI prototype.
 * **Alpha Stage (Example URL):** Replace this URL with the image URL of an alpha version with core functionalities implemented.
 * **Beta Stage (Example URL):** Replace this URL with the image URL of a beta version with most features complete.
