@@ -1,0 +1,20 @@
+<!-- templates/top_artists.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Artists</title>
+</head>
+<body>
+    <h1>Top Artists</h1>
+    <ul>
+        {% for artist in top_artists %}
+            <li>
+                <a href="{{ artist.url }}" target="_blank">{{ artist.name }}</a> - Playcount: {{ artist.playcount }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

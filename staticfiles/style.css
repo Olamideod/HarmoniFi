@@ -350,14 +350,13 @@
 }
 
 /* Additional styles for other sidebar elements */
-
-/* Additional styles */
+/* Additional styles for Browse All section */
 .browse-all {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 115px;
-    padding: 10px;
-    background-color: #121212; /* or any other color you prefer */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background-color: #121212;
 }
 
 .category-card {
@@ -365,14 +364,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 20px;
     border-radius: 8px;
     background: #181818;
     color: white;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     height: 240px;
-    width: 220px;
+    width: 100%; /* Adjust the width as needed */
 }
 
 .category-card img {
@@ -396,6 +395,7 @@
     color: #fff;
     margin-left: 20px; /* Align with the padding of the grid */
     padding-top: 20px; /* Space above the title */
+}
 }
 
 

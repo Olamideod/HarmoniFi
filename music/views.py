@@ -6,41 +6,65 @@ from django.http import HttpResponse
 import requests
 from django.contrib.staticfiles import finders
 import os
-from .utils.lastfm import get_top_artists, get_lastfm_access_token
+from .utils.lastfm import get_top_artists, get_lastfm_access_token, lastfm_get, jprint  # Assuming you have these functions in your lastfm module
 
 def top_artists_view(request):
-   api_key = 'eade452062ee7a2bd5fcc3c18a888378'
-   top_artists = get_top_artists(api_key)
-   return render(request, 'your_template.html', {'top_artists': top_artists})
+   # Specify the method for Last.fm API request
+   lastfm_payload = {'method': 'chart.gettopartists'}
 
+   # Make the Last.fm API request
+   lastfm_response = lastfm_get(lastfm_payload)
 
-def top_artists():
-   lastfm_api_url = "http://ws.audioscrobbler.com/2.0/"
+   # Check if the request was successful
+   if lastfm_response.status_code == 200:
+      # Extract relevant information from the API response
+      artists_data = lastfm_response.json().get('artists', {}).get('artist', [])
 
-   params = {
-      'user': 'Olamideod',
-      'api_key': 'eade452062ee7a2bd5fcc3c18a888378',
-      'format': 'json'
-   }
+      # Prepare a list of dictionaries with artist information
+      top_artists = []
+      for artist in artists_data:
+            name = artist.get('name', 'No Name')
+            image_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
+            mbid = artist.get('mbid', 'No ID')
+            playcount = artist.get('playcount', 0)
+            listeners = artist.get('listeners', 0)
+            url = artist.get('url', '')
 
-   response = requests.get(lastfm_api_url + 'user/top/artists', params=params)
+            top_artists.append({
+               'name': name,
+               'image_url': image_url,
+               'mbid': mbid,
+               'playcount': playcount,
+               'listeners': listeners,
+               'url': url,
+            })
 
-   if response.status_code == 200:
-      response_data = response.json()
-      artists_info = []
-
-      if 'topartists' in response_data:
-            for artist in response_data['topartists']['artist']:
-               name = artist.get('name', 'No Name')
-               avatar_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
-               artist_id = artist.get('mbid', 'No ID')
-               artists_info.append((name, avatar_url, artist_id))
-
-      return artists_info
+      # Pass the top_artists data to the template
+      return render(request, 'your_template.html', {'top_artists': top_artists})
    else:
-      # Handle the case when the API request is not successful
-      return []
+      # Handle the case where the API request failed
+      return render(request, 'error.html', {'error_message': 'Failed to fetch top artists.'})
 
+
+def top_artists(response_data):
+   # Initialize the list
+   artists_info = []
+
+   if 'topartists' in response_data:
+      for artist in response_data['topartists']['artist']:
+            name = artist.get('name', 'No Name')
+            avatar_url = artist.get('image', [{}])[-1].get('#text', 'No URL')
+            artist_id = artist.get('mbid', 'No ID')
+
+            # Provide the artist's image URL here
+            image_url = avatar_url  # Use the provided avatar_url
+
+            artists_info.append({'name': name, 'image': image_url, 'id': artist_id})
+            print(f"Artist: {name}, Image URL: {image_url}, ID: {artist_id}")
+   else:
+      print("No 'topartists' key in response_data")
+
+   return artists_info
 
 # API INTEGRATION FROM LAST.FM
 LASTFM_API_KEY = 'eade452062ee7a2bd5fcc3c18a888378'
@@ -75,7 +99,7 @@ def get_user_top_artists(request, username):
 
 def css_view(request):
    # Find the path to your style.css file
-   css_path = finders.find('style.css')
+   css_path = finders.find('staticfiles/style.css')
 
    # Read the content of the CSS file
    with open(css_path, 'r') as css_file:
@@ -93,7 +117,7 @@ def index(request):
    top_artists = get_top_artists(api_key)
 
    # Get the existing artists_info
-   artists_info = top_artists()
+   artists_info = top_artists  # Remove the parentheses
 
    context = {
       'artists_info': artists_info,
